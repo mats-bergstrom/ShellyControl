@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sun Feb 23 17:34:43 2025
- * Update Count    : 27
+ * Last Modified On: Sun Feb 23 17:54:56 2025
+ * Update Count    : 37
  */
 
 
@@ -221,6 +221,7 @@ cfgf_tagtab_t tagtab[] = {
 			  {"mqtt",		3, set_mqtt },
 			  {"ptopic",		1, set_ptopic },
 			  {"stopic",		1, set_stopic },
+			  {"timeout",		1, set_timeout},
 			  {"pon",		2, set_pon },
 			  {"poff",		2, set_poff },
 			  {0,0,0}
@@ -322,12 +323,17 @@ sctrl_publish_state()
     if ( opt_v ) {
 	printf("Publish state: %s = \"%s\" %d\n", topic_shelly, val, lval);
     }
-    status = mosquitto_publish(mqc, 0,
-			       topic_shelly, 
-			       lval,
-			       val,
-			       0,
-			       false );			/* retain is off */
+    if ( opt_n ) {
+	status = MOSQ_ERR_SUCCESS;
+    }
+    else {
+	status = mosquitto_publish(mqc, 0,
+				   topic_shelly, 
+				   lval,
+				   val,
+				   0,
+				   false ); /* retain is off */
+    }
     if ( status != MOSQ_ERR_SUCCESS ) {
 	printf("mosquitto_publish FAILED: %d\n",status);
 
@@ -396,8 +402,8 @@ sctrl_loop()
 {
     /*  We ignore checking the mqtt_P_ctr for now...  */
 
-    int on_ctr = 0;
-    int off_ctr = 0;
+    unsigned long on_ctr = 0;
+    unsigned long off_ctr = 0;
 
     printf("Starting loop.\n");
 
@@ -440,7 +446,13 @@ sctrl_loop()
 		    /* The cond var was signalled. */
 		    int P_val = mqtt_P_val;
 
-		    if ( P_val > on_P ) {
+		    if ( opt_v ) {
+			printf("P : %d (%ld,%ld) %lu %lu\n",
+			       P_val,on_P,off_P,
+			       on_ctr,off_ctr);
+		    }
+		    
+		    if ( P_val > (int)on_P ) {
 			off_ctr = 0;
 			++on_ctr;
 			if ( on_ctr >= on_N ) {
@@ -449,7 +461,7 @@ sctrl_loop()
 			/* Break sleep loop */
 			break;
 		    }
-		    if ( P_val < off_P ) {
+		    if ( P_val < (int)off_P ) {
 			on_ctr = 0;
 			++off_ctr;
 			if ( off_ctr > off_N ) {

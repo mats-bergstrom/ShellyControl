@@ -2,6 +2,7 @@
 private*
 cfgf/
 push.sh
+shellyctrl
 
 # Prerequisites
 *.d
