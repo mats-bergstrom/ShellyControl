@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sun Feb 23 17:54:56 2025
- * Update Count    : 37
+ * Last Modified On: Sat Mar  1 13:31:50 2025
+ * Update Count    : 46
  */
 
 
@@ -353,6 +353,9 @@ sctrl_set_state(unsigned state)
 
 	sctrl_publish_state();
     }
+    else if ( state == SCTRL_STATE_OFF ) {
+	sctrl_publish_state();
+    }
 }
 
 
@@ -372,8 +375,8 @@ sctrl_handle_POWER( int P )
 /* mqtt thread ONLY! */
 /* .. set mqtt_P_val and _ctr and signal cond var. */
 {
-    if ( opt_v )
-	printf("Power: P=%d ON=%d OFF=%lu\n", P, mqtt_P_val, mqtt_P_ctr);
+    if ( 0 && opt_v )
+	printf("Power: P=%d\n", P);
 
     pthread_mutex_lock( &mtx );
     do {
@@ -436,6 +439,8 @@ sctrl_loop()
 		    /* Timeout -- update run and send that */
 		    if ( opt_v )
 			printf("Timeout!\n");
+		    on_ctr = 0;
+		    off_ctr = 0;
 		    sctrl_timeout();
 
 		    /* Break sleep loop */
@@ -453,23 +458,30 @@ sctrl_loop()
 		    }
 		    
 		    if ( P_val > (int)on_P ) {
-			off_ctr = 0;
 			++on_ctr;
-			if ( on_ctr >= on_N ) {
-			    sctrl_set_state(SCTRL_STATE_ON);
-			}
-			/* Break sleep loop */
-			break;
 		    }
-		    if ( P_val < (int)off_P ) {
+		    else {
 			on_ctr = 0;
-			++off_ctr;
-			if ( off_ctr > off_N ) {
-			    sctrl_set_state(SCTRL_STATE_OFF);
-			}
-			/* Break sleep loop */
-			break;
 		    }
+		    if ( P_val > (int)off_P ) {
+			++off_ctr;
+		    }
+		    else {
+			off_ctr = 0;
+		    }
+
+		    if ( on_ctr >= on_N ) {
+			sctrl_set_state(SCTRL_STATE_ON);
+			off_ctr = 0;
+		    }
+
+		    if ( off_ctr > off_N ) {
+			sctrl_set_state(SCTRL_STATE_OFF);
+			on_ctr = 0;
+		    }
+
+
+		    break;
 		    /* NOT REACHED! */
 		}
 		
@@ -513,16 +525,18 @@ mq_message_callback(struct mosquitto *mqc, void *obj,
 
 
     if ( !strcmp(topic, topic_power) ) {
-	double X;
-	char* p = 0;
+	double P_dbl;
+	int P_int;
+	char* end_ptr = 0;
 	errno = 0;
-	X = strtod( pload, &p );
-	if ( !errno && *p != '\0' ) {
+	P_dbl = strtod( pload, &end_ptr );
+	if ( !errno && *end_ptr != '\0' ) {
 	    printf("bad payload, %s=%s\n",topic,pload);
 	    return;
 	}
 
-	sctrl_handle_POWER( -1000*X );
+	P_int = -1000 * P_dbl;
+	sctrl_handle_POWER( P_int );
     }
 
     else {
