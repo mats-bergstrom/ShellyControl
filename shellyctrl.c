@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sat Mar  1 13:31:50 2025
- * Update Count    : 46
+ * Last Modified On: Sat Mar  1 17:23:42 2025
+ * Update Count    : 48
  */
 
 
@@ -350,10 +350,10 @@ sctrl_set_state(unsigned state)
     if ( state !=sctrl_state ) {
 	printf("Setting state: %u\n", sctrl_state);
 	sctrl_state = state;
-
 	sctrl_publish_state();
     }
     else if ( state == SCTRL_STATE_OFF ) {
+	/* Always send OFF to make sure we are not running. */
 	sctrl_publish_state();
     }
 }
@@ -394,6 +394,9 @@ sctrl_handle_POWER( int P )
 void
 sctrl_timeout()
 {
+    static unsigned n = 0;
+    ++n;
+    printf("Timeout! OFF! %d\n");
     /* go to state off */
     sctrl_set_state( SCTRL_STATE_OFF );
 }
@@ -402,6 +405,7 @@ sctrl_timeout()
 
 void
 sctrl_loop()
+	/* Loop for the main thread. */
 {
     /*  We ignore checking the mqtt_P_ctr for now...  */
 
@@ -433,6 +437,7 @@ sctrl_loop()
 		if ( i == EINTR ) {
 		    /* Interrupt -- ignore, but contine to sleep. */
 		    /* do nothing -- keep in sleep loop */
+		    continue;
 		}
 	    
 		else if ( i == ETIMEDOUT ) {
