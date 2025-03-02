@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sat Mar  1 17:23:42 2025
- * Update Count    : 48
+ * Last Modified On: Sun Mar  2 10:08:09 2025
+ * Update Count    : 57
  */
 
 
@@ -250,6 +250,7 @@ add_time_sec(struct timespec* t, const struct timespec* now, unsigned dt)
     t->tv_nsec = now->tv_nsec;
 }
 
+#if 0
 void
 my_sleep( const struct timespec* ts )
 {
@@ -260,7 +261,9 @@ my_sleep( const struct timespec* ts )
 	exit( EXIT_FAILURE );
     }
 }
+#endif
 
+#if 0
 int
 is_past_time( struct timespec* reset_ts, unsigned int dt )
 {
@@ -273,6 +276,7 @@ is_past_time( struct timespec* reset_ts, unsigned int dt )
     add_time_sec( reset_ts, &now_ts, dt );
     return 1;
 }
+#endif
 
 /*****************************************************************************/
 /* sctrl loop */
@@ -286,7 +290,6 @@ pthread_cond_t	cv;
 
 /* These are seet by the mqtt thread */
 int		mqtt_P_val;		/* most receent power value */
-unsigned long	mqtt_P_ctr;		/* updated as heart-beat */
 
 
 /* State(s) */
@@ -306,7 +309,6 @@ sctrl_init()
 
     sctrl_state = SCTRL_STATE_OFF;
     mqtt_P_val = 0;
-    mqtt_P_ctr = 0;
 }
 
 
@@ -348,14 +350,10 @@ void
 sctrl_set_state(unsigned state)
 {
     if ( state !=sctrl_state ) {
-	printf("Setting state: %u\n", sctrl_state);
 	sctrl_state = state;
-	sctrl_publish_state();
+	printf("Setting state: %u\n", sctrl_state);
     }
-    else if ( state == SCTRL_STATE_OFF ) {
-	/* Always send OFF to make sure we are not running. */
-	sctrl_publish_state();
-    }
+    sctrl_publish_state();
 }
 
 
@@ -363,11 +361,6 @@ sctrl_set_state(unsigned state)
 
 
 /* ========================================================================== */
-
-
-
-
-
 
 
 void
@@ -381,7 +374,6 @@ sctrl_handle_POWER( int P )
     pthread_mutex_lock( &mtx );
     do {
 	mqtt_P_val = P;
-	++mqtt_P_ctr;
 	pthread_cond_signal( &cv );
     } while(0);
     pthread_mutex_unlock( &mtx );
@@ -396,7 +388,7 @@ sctrl_timeout()
 {
     static unsigned n = 0;
     ++n;
-    printf("Timeout! OFF! %d\n");
+    printf("Timeout! Turning OFF! %d\n",n);
     /* go to state off */
     sctrl_set_state( SCTRL_STATE_OFF );
 }
@@ -407,8 +399,6 @@ void
 sctrl_loop()
 	/* Loop for the main thread. */
 {
-    /*  We ignore checking the mqtt_P_ctr for now...  */
-
     unsigned long on_ctr = 0;
     unsigned long off_ctr = 0;
 
@@ -468,21 +458,26 @@ sctrl_loop()
 		    else {
 			on_ctr = 0;
 		    }
-		    if ( P_val > (int)off_P ) {
+		    if ( P_val < (int)off_P ) {
 			++off_ctr;
 		    }
 		    else {
 			off_ctr = 0;
 		    }
 
-		    if ( on_ctr >= on_N ) {
+		    /* Do state change to OFF if possible  */
+		    if ( off_ctr >= off_N ) {
+			sctrl_set_state(SCTRL_STATE_OFF);
+			on_ctr = 0;
+		    }
+		    /* Do state change to ON if needed  */
+		    else if ( on_ctr >= on_N ) {
 			sctrl_set_state(SCTRL_STATE_ON);
 			off_ctr = 0;
 		    }
-
-		    if ( off_ctr > off_N ) {
-			sctrl_set_state(SCTRL_STATE_OFF);
-			on_ctr = 0;
+		    /* No change, publish state */
+		    else {
+			sctrl_publish_state();
 		    }
 
 
@@ -555,36 +550,6 @@ mq_message_callback(struct mosquitto *mqc, void *obj,
     
 }
 
-#if 0
-/* UNUSED! */
-void
-mq_publish()
-{
-    int i;
-    for ( i = 0; tab[i].addr; ++i ) {
-	size_t l;
-	int status;
-	l = strnlen( topic_val[i], MAX_TOPIC_LEN );
-
-	if ( opt_v ) {
-	    printf(" %s %s\n", tab[i].topic, topic_val[i] );
-	}
-
-	if ( !opt_n && i && (l >0) ) {
-	    status = mosquitto_publish(mqc, 0,
-				       tab[i].topic,
-				       l,
-				       topic_val[i], 1, true );
-	    if ( status != MOSQ_ERR_SUCCESS) {
-		perror("mosquitto_publish: ");
-		exit( EXIT_FAILURE );
-	    }
-
-	    status = mosquitto_loop_write( mqc, 1 );
-	}
-    }
-}
-#endif
 
 
 void

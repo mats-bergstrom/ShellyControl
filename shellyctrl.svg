@@ -24,9 +24,9 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="true"
-     inkscape:zoom="2.2601823"
-     inkscape:cx="687.55516"
-     inkscape:cy="194.23212"
+     inkscape:zoom="1.5644176"
+     inkscape:cx="691.63119"
+     inkscape:cy="270.38816"
      inkscape:window-width="1855"
      inkscape:window-height="1061"
      inkscape:window-x="0"
@@ -35,7 +35,9 @@
      inkscape:current-layer="layer1">
     <inkscape:grid
        type="xygrid"
-       id="grid9" />
+       id="grid9"
+       originx="0"
+       originy="0" />
   </sodipodi:namedview>
   <defs
      id="defs2">
@@ -65,7 +67,7 @@
      id="layer1">
     <g
        id="g1061"
-       transform="translate(5,130)">
+       transform="translate(4.9999987,130)">
       <rect
          style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
          id="rect165"
@@ -88,7 +90,7 @@
     </g>
     <g
        id="g1061-2"
-       transform="translate(5,30)">
+       transform="translate(4.9999987,30)">
       <rect
          style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
          id="rect165-6"
@@ -111,7 +113,7 @@
     </g>
     <g
        id="g1078"
-       transform="translate(30,140)">
+       transform="translate(29.999999,140)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -145,7 +147,7 @@
     </g>
     <g
        id="g1078-6"
-       transform="translate(55,5)">
+       transform="translate(54.999999,5)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -190,7 +192,7 @@
            id="tspan1063-7"
            style="font-size:4.23333px;fill:#000000;stroke:none;stroke-width:0.264583px"
            x="28.679642"
-           y="26.051983">shelly</tspan></text>
+           y="26.051983">stopic</tspan></text>
       <rect
          style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
          id="rect1067-5"
@@ -247,7 +249,7 @@
     </g>
     <g
        id="g1253"
-       transform="translate(-5.000001,-5)">
+       transform="translate(-5.0000013,-5)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -281,7 +283,7 @@
     </g>
     <g
        id="g1253-7"
-       transform="translate(-1.8999948e-6,80)">
+       transform="translate(-1.3250958e-6,80)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -292,7 +294,7 @@
            id="tspan1231-2"
            style="font-size:4.23333px;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px"
            x="139.90263"
-           y="36.511299">P</tspan></text>
+           y="36.511299">P_val</tspan></text>
       <rect
          style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
          id="rect1235-0"
@@ -315,7 +317,7 @@
     </g>
     <g
        id="g1265"
-       transform="translate(-5.000001,5)">
+       transform="translate(-5.0000013,5)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -451,7 +453,7 @@
     </g>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2)"
-       d="m 80,165 h 35"
+       d="M 79.999999,165 H 115"
        id="path1403"
        sodipodi:nodetypes="cc" />
     <path
@@ -461,7 +463,7 @@
        sodipodi:nodetypes="cc" />
     <g
        id="g1740"
-       transform="translate(-15,80)">
+       transform="translate(-15.000001,80)">
       <text
          xml:space="preserve"
          style="font-size:2.82222px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -498,53 +500,14 @@
            x="135.52917"
            y="31.529167">global</tspan></text>
     </g>
-    <g
-       id="g1754"
-       transform="translate(15,80)">
-      <text
-         xml:space="preserve"
-         style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="139.90263"
-         y="36.511299"
-         id="text1746"><tspan
-           sodipodi:role="line"
-           id="tspan1744"
-           style="font-size:4.23333px;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px"
-           x="139.90263"
-           y="36.511299">P_ctr</tspan></text>
-      <rect
-         style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
-         id="rect1748"
-         width="10.000002"
-         height="10"
-         x="135"
-         y="30"
-         ry="3.5527137e-15" />
-      <text
-         xml:space="preserve"
-         style="font-size:1.41111px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="135.52917"
-         y="31.529167"
-         id="text1752"><tspan
-           sodipodi:role="line"
-           id="tspan1750"
-           style="font-size:1.41111px;fill:#000000;stroke:none;stroke-width:0.264583px"
-           x="135.52917"
-           y="31.529167">global</tspan></text>
-    </g>
     <path
        style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#Arrow2);stop-color:#000000;stop-opacity:1"
        d="M 140,150 V 125"
        id="path1767"
        sodipodi:nodetypes="cc" />
     <path
-       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#Arrow2);stop-color:#000000;stop-opacity:1"
-       d="M 155,150 V 125"
-       id="path1791"
-       sodipodi:nodetypes="cc" />
-    <path
        style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
-       d="m 125,150 0,-25"
+       d="M 125,150 V 125"
        id="path1815"
        sodipodi:nodetypes="cc" />
     <path
@@ -557,14 +520,9 @@
        d="M 140,105 V 79.999999"
        id="path1841"
        sodipodi:nodetypes="cc" />
-    <path
-       style="font-variation-settings:normal;opacity:1;vector-effect:none;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;marker-end:url(#Arrow2);stop-color:#000000;stop-opacity:1"
-       d="M 155,105 V 79.999999"
-       id="path1865"
-       sodipodi:nodetypes="cc" />
     <g
        id="g1949"
-       transform="translate(-40,30)">
+       transform="translate(-40.000001,30)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -601,42 +559,8 @@
        d="m 105,64.999999 h 15"
        id="path1951" />
     <g
-       id="g1963"
-       transform="translate(-40,45)">
-      <text
-         xml:space="preserve"
-         style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="139.90263"
-         y="36.511299"
-         id="text1955"><tspan
-           sodipodi:role="line"
-           id="tspan1953"
-           style="font-size:4.23333px;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px"
-           x="139.90263"
-           y="36.511299">TO</tspan></text>
-      <rect
-         style="color:#000000;overflow:visible;fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.264999"
-         id="rect1957"
-         width="10.000002"
-         height="10"
-         x="135"
-         y="30"
-         ry="3.5527137e-15" />
-      <text
-         xml:space="preserve"
-         style="font-size:1.41111px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="135.52917"
-         y="31.529167"
-         id="text1961"><tspan
-           sodipodi:role="line"
-           id="tspan1959"
-           style="font-size:1.41111px;fill:#000000;stroke:none;stroke-width:0.264583px"
-           x="135.52917"
-           y="31.529167">local</tspan></text>
-    </g>
-    <g
        id="g5052"
-       transform="translate(70,-5)">
+       transform="translate(69.999999,-5)">
       <text
          xml:space="preserve"
          style="font-size:4.23333px;line-height:125%;font-family:Sans;-inkscape-font-specification:Sans;text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
