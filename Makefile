@@ -1,6 +1,5 @@
 ######################### -*- Mode: Makefile-Gmake -*- ########################
 ## Copyright (C) 2024, Mats Bergstrom
-## $Id$
 ## 
 ## File name       : Makefile
 ## Description     : for ShellyControl
@@ -9,8 +8,8 @@
 ## Created On      : Fri Oct  4 08:36:06 2024
 ## 
 ## Last Modified By: Mats Bergstrom
-## Last Modified On: Fri Oct  4 08:37:17 2024
-## Update Count    : 1
+## Last Modified On: Sun Mar  9 09:21:22 2025
+## Update Count    : 2
 ###############################################################################
 
 

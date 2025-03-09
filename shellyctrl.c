@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sun Mar  2 10:08:09 2025
- * Update Count    : 57
+ * Last Modified On: Sun Mar  9 08:13:26 2025
+ * Update Count    : 59
  */
 
 
@@ -158,7 +158,7 @@ set_timeout( int argc, const char** argv )
 
     CFGF_UL(1,timeout);
 
-    printf("pon: %lu\n", timeout );
+    printf("timeout: %lu\n", timeout );
 
     return 0;
 }
@@ -210,7 +210,7 @@ set_poff( int argc, const char** argv )
     CFGF_UL(2,off_N);
 
 
-    printf("pon: %lu %lu\n", off_P, off_N );
+    printf("poff: %lu %lu\n", off_P, off_N );
 
     return 0;
 }
@@ -393,12 +393,13 @@ sctrl_timeout()
     sctrl_set_state( SCTRL_STATE_OFF );
 }
 
-
+static unsigned max_timeout_ctr = 3;
 
 void
 sctrl_loop()
 	/* Loop for the main thread. */
 {
+    unsigned timeout_ctr = 0;
     unsigned long on_ctr = 0;
     unsigned long off_ctr = 0;
 
@@ -437,7 +438,12 @@ sctrl_loop()
 		    on_ctr = 0;
 		    off_ctr = 0;
 		    sctrl_timeout();
-
+		    ++timeout_ctr;
+		    if ( timeout_ctr > max_timeout_ctr ) {
+			printf("Too many Timeouts.  Exiting!\n");
+			sleep( 2 );
+			exit( EXIT_FAILURE );
+		    }
 		    /* Break sleep loop */
 		    break;
 		}
@@ -445,6 +451,7 @@ sctrl_loop()
 		else {
 		    /* The cond var was signalled. */
 		    int P_val = mqtt_P_val;
+		    timeout_ctr = 0;
 
 		    if ( opt_v ) {
 			printf("P : %d (%ld,%ld) %lu %lu\n",
