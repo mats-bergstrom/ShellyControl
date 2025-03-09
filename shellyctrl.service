@@ -1,0 +1,15 @@
+# Service file for shellyctrl
+
+[Unit]
+Description=shellyctrl service
+Requires=dhcpcd.service
+After=dhcpcd.service
+
+[Service]
+ExecStart=/usr/local/bin/shellyctrl /usr/local/etc/shellyctrl.cfg
+StandardOutput=journal+console
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
