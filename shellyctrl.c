@@ -9,8 +9,8 @@
  * Created On      : Sun Oct  6 10:04:28 2024
  * 
  * Last Modified By: Mats Bergstrom
- * Last Modified On: Sun Mar  9 08:13:26 2025
- * Update Count    : 59
+ * Last Modified On: Sun Mar 16 10:18:33 2025
+ * Update Count    : 105
  */
 
 
@@ -42,7 +42,21 @@
 } while(0)
 
 
+/* Move this into cfgf.h  */
+int
+cfgf_set_s(int argc, const char** argv, char** s)
+{
+    if ( argc != 2 )
+	return -1;
+    
+    if (*s)
+	free( *s );
+    *s = strdup( argv[1] );
+    if ( !*s || !*(*s) )
+	return -1;
 
+    return 0;
+}
 
 int opt_v = 0;				/* Verbose printing */
 int opt_n = 0;				/* NoActive, do not send mqtt data */
@@ -91,52 +105,80 @@ set_mqtt( int argc, const char** argv)
 
 
 /* This is the topic we listen to for power values. */
-/* ptopic <power-topic> */
+/* power-topic <power-topic> */
 
-#define default_TOPIC_POWER		"power/topic"
+#define default_POWER_TOPIC		"power/topic"
 
-char* topic_power		= 0;
+char* power_topic		= 0;
 
 int
-set_ptopic( int argc, const char** argv)
+set_power_topic( int argc, const char** argv)
 {
-    if ( argc != 2 )
-	return -1;
-    
-    if (topic_power)
-	free( topic_power );
-    topic_power = strdup( argv[1] );
-    if ( !topic_power || !*topic_power )
-	return -1;
+    int i = cfgf_set_s(argc, argv, &power_topic);
+    if ( i )
+	return i;
+    if ( opt_v )
+	printf("power-topic %s\n", power_topic);    
+    return 0;
+}
+
+
+/* This is the topic we listen to for mode. */
+/* mode-topic <mode-topic> */
+
+#define default_MODE_TOPIC		"shelly/012345/mode"
+
+char* mode_topic		= 0;
+
+int
+set_mode_topic( int argc, const char** argv)
+{
+    int i = cfgf_set_s(argc, argv, &mode_topic);
+    if ( i )
+	return i;
+    if ( opt_v )
+	printf("mode-topic %s\n", mode_topic);    
+    return 0;
+}
+
+
+/* This is the topic that the shelly plug uses for input command */
+/* cmd-topic <shelly-topic> */
+
+#define default_CMD_TOPIC	"shellies/shellyplug-s-012345/relay/0/command"
+
+char* cmd_topic		= 0;
+
+int
+set_cmd_topic( int argc, const char** argv)
+{
+    int i = cfgf_set_s(argc, argv, &cmd_topic);
+    if ( i )
+	return i;
 
     if ( opt_v )
-	printf("ptopic %s\n", topic_power);
+	printf("cmd-topic %s\n", cmd_topic);
     
     return 0;
 }
 
 
-/* This is the topic that the shelly plug uses */
-/* stopic <shelly-topic> */
+/* This is the topic that the shelly plug uses to annouce its state */
+/* state-topic <shelly-topic> */
 
-#define default_SHELLY_TOPIC		"shellies/shellyplug-s-012345"
+#define default_STATE_TOPIC	"shellies/shellyplug-s-012345/relay/0"
 
-char* topic_shelly		= 0;
+char* state_topic	= 0;
 
 int
-set_stopic( int argc, const char** argv)
+set_state_topic( int argc, const char** argv)
 {
-    if ( argc != 2 )
-	return -1;
-    
-    if (topic_shelly)
-	free( topic_shelly );
-    topic_shelly = strdup( argv[1] );
-    if ( !topic_shelly || !*topic_shelly )
-	return -1;
+    int i = cfgf_set_s(argc, argv, &state_topic);
+    if ( i )
+	return i;
 
     if ( opt_v )
-	printf("stopic %s\n", topic_shelly);
+	printf("state-topic %s\n", state_topic);
     
     return 0;
 }
@@ -167,7 +209,7 @@ set_timeout( int argc, const char** argv )
 
 /* If the power is above on_power for more than on_count times,  */
 /* we turn on the poer. */
-/* pon <on-power> <on-count> */
+/* POn <on-power> <on-count> */
 
 unsigned long on_P	= 750;
 unsigned long on_N	= 50;
@@ -184,7 +226,7 @@ set_pon( int argc, const char** argv )
     CFGF_UL(1,on_P);
     CFGF_UL(2,on_N);
 
-    printf("pon: %lu %lu\n", on_P, on_N );
+    printf("POn: %lu %lu\n", on_P, on_N );
 
     return 0;
 }
@@ -192,7 +234,7 @@ set_pon( int argc, const char** argv )
 
 /* If the power is less than off_power for off_count times, */
 /* the power is turned off. */
-/* poff <off-power> <off-count> */
+/* POff <off-power> <off-count> */
 
 unsigned long off_P	= 100;
 unsigned long off_N	= 20;
@@ -210,7 +252,7 @@ set_poff( int argc, const char** argv )
     CFGF_UL(2,off_N);
 
 
-    printf("poff: %lu %lu\n", off_P, off_N );
+    printf("POff: %lu %lu\n", off_P, off_N );
 
     return 0;
 }
@@ -219,15 +261,18 @@ set_poff( int argc, const char** argv )
 
 cfgf_tagtab_t tagtab[] = {
 			  {"mqtt",		3, set_mqtt },
-			  {"ptopic",		1, set_ptopic },
-			  {"stopic",		1, set_stopic },
+			  {"power-topic",	1, set_power_topic },
+			  {"mode-topic",	1, set_mode_topic },
+			  {"cmd-topic",		1, set_cmd_topic },
+			  {"state-topic",	1, set_state_topic },
 			  {"timeout",		1, set_timeout},
-			  {"pon",		2, set_pon },
-			  {"poff",		2, set_poff },
+			  {"POn",		2, set_pon },
+			  {"POff",		2, set_poff },
 			  {0,0,0}
 };
 
 
+
 /*****************************************************************************/
 /* Misc support */
 
@@ -278,24 +323,34 @@ is_past_time( struct timespec* reset_ts, unsigned int dt )
 }
 #endif
 
+
+
 /*****************************************************************************/
 /* sctrl loop */
 
 /* Global mosquitto handle. */
 struct mosquitto* mqc = 0;
 
+/* States, if the shelly is turned on or off */
+#define STATE_OFF	(0)
+#define STATE_ON	(1)
+#define STATE_TIMEOUT	(2)
+int sctrl_state = STATE_OFF;
+
+
 /* Protected Globals */
 pthread_mutex_t mtx;
 pthread_cond_t	cv;
 
 /* These are seet by the mqtt thread */
-int		mqtt_P_val;		/* most receent power value */
+int sctrl_P = 0;			/* most receent power value from mqtt */
+int shelly_state = STATE_OFF;		/* most recent shelly state */
 
+#define MODE_OFF	(0)
+#define MODE_ON		(1)
+#define MODE_POWER	(10)
+int sctrl_mode = MODE_OFF;
 
-/* State(s) */
-#define SCTRL_STATE_OFF (0)
-#define SCTRL_STATE_ON	(1)
-unsigned sctrl_state = SCTRL_STATE_OFF;
 
 
 
@@ -307,30 +362,31 @@ sctrl_init()
     pthread_mutex_init( &mtx, 0 );
     pthread_cond_init( &cv, 0 );
 
-    sctrl_state = SCTRL_STATE_OFF;
-    mqtt_P_val = 0;
+    sctrl_state = STATE_OFF;
+    sctrl_P = 0;
+    sctrl_mode = MODE_OFF;
 }
 
 
-void
 
+void
 sctrl_publish_state()
 {
     int status;
     const char val_ON[]  = "on";
     const char val_OFF[] = "off";
-    const char* val = ((sctrl_state == SCTRL_STATE_ON) ? val_ON : val_OFF );
+    const char* val = ((sctrl_state == STATE_ON) ? val_ON : val_OFF );
     int lval = strlen(val);
     
     if ( opt_v ) {
-	printf("Publish state: %s = \"%s\" %d\n", topic_shelly, val, lval);
+	printf("Publish state: %s = \"%s\" %d\n", cmd_topic, val, lval);
     }
     if ( opt_n ) {
 	status = MOSQ_ERR_SUCCESS;
     }
     else {
 	status = mosquitto_publish(mqc, 0,
-				   topic_shelly, 
+				   cmd_topic, 
 				   lval,
 				   val,
 				   0,
@@ -342,18 +398,6 @@ sctrl_publish_state()
 	sleep(2);
 	abort();
     }
-
-}
-
-
-void
-sctrl_set_state(unsigned state)
-{
-    if ( state !=sctrl_state ) {
-	sctrl_state = state;
-	printf("Setting state: %u\n", sctrl_state);
-    }
-    sctrl_publish_state();
 }
 
 
@@ -364,16 +408,18 @@ sctrl_set_state(unsigned state)
 
 
 void
-sctrl_handle_POWER( int P )
+mqt_set_data( int power, int state, int mode )
 /* mqtt thread ONLY! */
-/* .. set mqtt_P_val and _ctr and signal cond var. */
+/* .. set the global variables and signal */
 {
-    if ( 0 && opt_v )
-	printf("Power: P=%d\n", P);
+    if ( opt_v )
+	printf("Data: P=%d state=%d mode=%d\n", power,state,mode);
 
     pthread_mutex_lock( &mtx );
     do {
-	mqtt_P_val = P;
+	sctrl_P = power;
+	shelly_state = state;
+	sctrl_mode = mode;
 	pthread_cond_signal( &cv );
     } while(0);
     pthread_mutex_unlock( &mtx );
@@ -383,15 +429,6 @@ sctrl_handle_POWER( int P )
 
 
 
-void
-sctrl_timeout()
-{
-    static unsigned n = 0;
-    ++n;
-    printf("Timeout! Turning OFF! %d\n",n);
-    /* go to state off */
-    sctrl_set_state( SCTRL_STATE_OFF );
-}
 
 static unsigned max_timeout_ctr = 3;
 
@@ -421,26 +458,33 @@ sctrl_loop()
 	    if ( opt_v )
 		printf("Sleeping: %u\n", dt);
 
-	    /* Loop to allow continues sleep */
+	    /* Loop to allow continued sleep */
 	    for(;;) {
 		/* Wait for input at most dt s */
 		i = pthread_cond_timedwait( &cv, &mtx, &ts );
 		if ( i == EINTR ) {
 		    /* Interrupt -- ignore, but contine to sleep. */
-		    /* do nothing -- keep in sleep loop */
+		    /* .. just continue to enter the _timedwait again. */
 		    continue;
 		}
 	    
 		else if ( i == ETIMEDOUT ) {
-		    /* Timeout -- update run and send that */
-		    if ( opt_v )
-			printf("Timeout!\n");
+		    /* Timeout --  */
+		    ++timeout_ctr;
+		    sctrl_state = STATE_OFF;
 		    on_ctr = 0;
 		    off_ctr = 0;
-		    sctrl_timeout();
-		    ++timeout_ctr;
+
+		    printf("Timeout! timeout_ctr = %d\n",timeout_ctr);
+		    sctrl_publish_state();
+
 		    if ( timeout_ctr > max_timeout_ctr ) {
+			/* Abort execution, send off to shelly 2 more times */
 			printf("Too many Timeouts.  Exiting!\n");
+			sleep( 2 );
+			sctrl_publish_state();
+			sleep( 2 );
+			sctrl_publish_state();
 			sleep( 2 );
 			exit( EXIT_FAILURE );
 		    }
@@ -449,16 +493,20 @@ sctrl_loop()
 		}
 
 		else {
-		    /* The cond var was signalled. */
-		    int P_val = mqtt_P_val;
-		    timeout_ctr = 0;
+		    /* The condvar was signalled. */
+		    int P_val = sctrl_P;
+		    int new_state = sctrl_state;
+		    
+		    timeout_ctr = 0;	/* Clear timeout counter. */
 
 		    if ( opt_v ) {
-			printf("P : %d (%ld,%ld) %lu %lu\n",
+			printf("P : %d (%ld,%ld) on_ctr=%lu "
+			       "off_ctr=%lu, shelly_state=%d, sctrl_mode=%d\n",
 			       P_val,on_P,off_P,
-			       on_ctr,off_ctr);
+			       on_ctr,off_ctr,shelly_state,sctrl_mode);
 		    }
-		    
+
+		    /* Update counters. */
 		    if ( P_val > (int)on_P ) {
 			++on_ctr;
 		    }
@@ -472,21 +520,43 @@ sctrl_loop()
 			off_ctr = 0;
 		    }
 
-		    /* Do state change to OFF if possible  */
-		    if ( off_ctr >= off_N ) {
-			sctrl_set_state(SCTRL_STATE_OFF);
+		    /* Figure out next state */
+		    if ( sctrl_mode == MODE_OFF ) {
+			new_state = STATE_OFF;
 			on_ctr = 0;
-		    }
-		    /* Do state change to ON if needed  */
-		    else if ( on_ctr >= on_N ) {
-			sctrl_set_state(SCTRL_STATE_ON);
 			off_ctr = 0;
 		    }
-		    /* No change, publish state */
-		    else {
-			sctrl_publish_state();
+		    else if ( sctrl_mode == MODE_ON ) {
+			new_state = STATE_ON;
+			on_ctr = 0;
+			off_ctr = 0;
+		    }
+		    else if ( sctrl_mode == MODE_POWER ) {
+			if ( off_ctr >= off_N ) {
+			    new_state = STATE_OFF;
+			    on_ctr = 0;
+			}
+			else if ( on_ctr >= on_N ) {
+			    new_state = STATE_ON;
+			    off_ctr = 0;
+			}
+			else {
+			    new_state = sctrl_state;
+			}
 		    }
 
+		    if ( new_state != sctrl_state ) {
+			printf("New state: %d --> %d (shelly=%d)\n",
+			       sctrl_state,new_state,shelly_state);
+			sctrl_state = new_state;
+			sctrl_publish_state();
+		    }
+		    else if ( new_state != shelly_state ) {
+			printf("Nudge shelly: %d --> %d\n",
+			       shelly_state,new_state);
+			sctrl_state = new_state;
+			sctrl_publish_state();
+		    }
 
 		    break;
 		    /* NOT REACHED! */
@@ -503,7 +573,7 @@ sctrl_loop()
 }
 
 
-
+
 /*****************************************************************************/
 /* Mosquitto handling */
 
@@ -515,23 +585,27 @@ Defined above.
 struct mosquitto* mqc = 0;
 */
 
-#define MAX_TOPIC_LEN		(80)
-char topic_val[MAX_TOPIC_LEN];
 
-/* This is called by the mqtt thread! */
+/* This is called by the mqtt thread, and is where the main action feeding
+ * the main loop with information happens.
+ */
 void
 mq_message_callback(struct mosquitto *mqc, void *obj,
 		    const struct mosquitto_message *msg)
 {
     
-    const char*    topic = msg->topic;
-    const char*    pload = msg->payload;
+    const char*	topic = msg->topic;
+    const char*	pload = msg->payload;
 
+    static int state = STATE_OFF;
+    static int mode = MODE_OFF;
+    
     if ( opt_v )
 	printf("mqtt data: %s = %s\n", topic, pload);
 
 
-    if ( !strcmp(topic, topic_power) ) {
+    /* POWER ------------------------------------------------------- */
+    if ( !strcmp(topic, power_topic) ) {
 	double P_dbl;
 	int P_int;
 	char* end_ptr = 0;
@@ -543,10 +617,43 @@ mq_message_callback(struct mosquitto *mqc, void *obj,
 	}
 
 	P_int = -1000 * P_dbl;
-	sctrl_handle_POWER( P_int );
+	mqt_set_data( P_int, state, mode );
     }
 
+    /* Shelly State ------------------------------------------------ */
+    else if ( !strcmp(topic, state_topic) ) {
+	if ( !strcmp("on",pload ) ) {
+	    state = 1;
+	}
+	else if ( !strcmp("off",pload) ) {
+	    state = 0;
+	}
+	else {
+	    /* Bad state, keep old value. */
+	    printf(".. Bad state: \"%s\"\b",pload);
+	}
+    }
+
+    /* MODE -------------------------------------------------------- */
+    else if ( !strcmp(topic, mode_topic) ) {
+	if ( !strcmp("0",pload) ) {
+	    mode = 0;
+	}
+	else if ( !strcmp("1",pload) ) {
+	    mode = 1;
+	}
+	else if ( !strcmp("10",pload) ) {
+	    mode = 10;
+	}
+	else {
+	    /* Bad mode, keep old value. */
+	    printf(".. Bad mode: \"%s\"\b",pload);
+	}
+    }
+
+    /* Unrecognised topic ----------------------------------------- */
     else {
+	/* Print the 25 1'st, then be silent. */
 	static int bad_count = 25;
 	if ( bad_count ) {
 	    printf("Ignored topic(%d): %s\n",bad_count,topic);
@@ -558,6 +665,25 @@ mq_message_callback(struct mosquitto *mqc, void *obj,
 }
 
 
+void
+mq_sub(const char* s, const char* t)
+{
+    if ( !t || !*t ) {
+	printf("topic %s missing!\n",s);
+	return;
+    }
+    
+    mosquitto_subscribe(mqc, NULL, t, 0);
+}
+
+void
+mq_subscribe()
+	/* Subscribe to topics */
+{
+    mq_sub("power-topic",	power_topic );
+    mq_sub("mode-topic",	mode_topic );
+    mq_sub("state-topic",	state_topic );
+}
 
 void
 mq_connect_callback(struct mosquitto *mqc, void *obj, int result)
@@ -567,6 +693,7 @@ mq_connect_callback(struct mosquitto *mqc, void *obj, int result)
 	/* Something is wrong.  Wait before retry */
 	sleep(5);
     }
+    mq_subscribe();
 }
 
 
@@ -611,23 +738,6 @@ mq_init()
 }
 
 
-void
-mq_sub(const char* s, const char* t)
-{
-    if ( !t || !*t ) {
-	printf("topic %s missing!\n",s);
-	return;
-    }
-    
-    mosquitto_subscribe(mqc, NULL, t, 0);
-}
-
-void
-mq_subscribe()
-	/* Subscribe to topics */
-{
-    mq_sub("power",   topic_power );
-}
 
 void
 mq_fini()
@@ -668,16 +778,16 @@ main( int argc, const char** argv )
 
     setbuf( stdout, 0 );		/* No buffering */
 
-    chdir("/");
-
     /* Set default values for the MQTT server. */
     mqtt_id = strdup( default_MQTT_ID );
     mqtt_broker = strdup( default_MQTT_BROKER );
     /* set when declared: mqtt_port = MQTT_PORT; */
 
     /* Set default topics. */
-    topic_power		= strdup( default_TOPIC_POWER );
-    topic_shelly	= strdup( default_SHELLY_TOPIC );
+    power_topic		= strdup( default_POWER_TOPIC );
+    cmd_topic		= strdup( default_CMD_TOPIC );
+    state_topic		= strdup( default_STATE_TOPIC );
+    mode_topic		= strdup( default_MODE_TOPIC );
 
 
     sctrl_init();
@@ -715,10 +825,12 @@ main( int argc, const char** argv )
 	--argc; ++argv;
     }
 
+    chdir("/");				/* Prevent fs hogging. */
+
     printf("Starting.\n");
 	 
     mq_init();
-    mq_subscribe();
+    /* Done in connect callback! mq_subscribe(); */
 
     
     /* Run the network loop in a background thread, call returns quickly. */
@@ -731,6 +843,9 @@ main( int argc, const char** argv )
 	return EXIT_FAILURE;
     }
 
+
+    sleep(1);
+    
     sctrl_loop();
     
     mq_fini();
