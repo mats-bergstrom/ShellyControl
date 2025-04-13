@@ -48,3 +48,23 @@ cmd-topic	 shellies/shellyplug-s-012345/relay/0/command
 # state-topic	Shelly state input topic, "on" or "off".
 state-topic	 shellies/shellyplug-s-012345/relay/0
 ```
+
+
+## Installation
+
+Build:
+```
+make
+```
+
+Install:
+``
+make install
+```
+
+Use systemctrl to enable and run:
+```
+sudo systemctl enable shellyctrl
+sudo systemctl start shellyctrl
+sudo systemctl status shellyctrl
+```
