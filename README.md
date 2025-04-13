@@ -58,7 +58,7 @@ make
 ```
 
 Install:
-``
+```
 make install
 ```
 
